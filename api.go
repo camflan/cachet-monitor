@@ -38,7 +38,7 @@ func (api CachetAPI) Ping() error {
 
 // SendMetric adds a data point to a cachet monitor - Deprecated
 func (api CachetAPI) SendMetric(l *logrus.Entry, id int, lag int64) {
-	api.SendMetrics(l, "lag", []int { id }, lag)
+	api.SendMetrics(l, "lag", []int{id}, lag)
 }
 
 // SendMetrics adds a data point to a cachet monitor
@@ -51,7 +51,7 @@ func (api CachetAPI) SendMetrics(l *logrus.Entry, metricname string, arr []int, 
 			"timestamp": time.Now().Unix(),
 		})
 
-		resp,_,_ := api.NewRequest("POST", "/metrics/"+strconv.Itoa(v)+"/points", jsonBytes)
+		resp, _, _ := api.NewRequest("POST", "/metrics/"+strconv.Itoa(v)+"/points", jsonBytes)
 
 		if resp != nil {
 			if resp.StatusCode == 200 {
@@ -67,7 +67,7 @@ func (api CachetAPI) SendMetrics(l *logrus.Entry, metricname string, arr []int, 
 
 // TODO: test
 // GetComponentData
-func (api CachetAPI) GetComponentData(compid int) (Component) {
+func (api CachetAPI) GetComponentData(compid int) Component {
 	logrus.Debugf("Getting data from component ID:%d", compid)
 
 	resp, body, err := api.NewRequest("GET", "/components/"+strconv.Itoa(compid), []byte(""))
@@ -84,11 +84,11 @@ func (api CachetAPI) GetComponentData(compid int) (Component) {
 }
 
 // SetComponentStatus
-func (api CachetAPI) SetComponentStatus(comp *AbstractMonitor, status int) (Component) {
+func (api CachetAPI) SetComponentStatus(comp *AbstractMonitor, status int) Component {
 	logrus.Debugf("Setting new status (%d) to component ID: %d (instead of %d)", status, comp.ComponentID, comp.currentStatus)
 
 	jsonBytes, _ := json.Marshal(map[string]interface{}{
-		"status":     status,
+		"status": status,
 	})
 
 	resp, body, err := api.NewRequest("PUT", "/components/"+strconv.Itoa(comp.ComponentID), jsonBytes)
